@@ -1,0 +1,40 @@
+--- #---------------- CLI Deployment ---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: connect-cli
+  name: connect-cli
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: connect-cli
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: connect-cli
+    spec:
+      containers:
+        - image: hyperledger/fabric-tools:amd64-2.2.0
+          name: cli
+          tty: true
+          volumeMounts:
+            # - mountPath: /host/var/run/
+            #   name: cli-claim0
+            - mountPath: /home/data
+              name: cli-data
+          workingDir: /home/data
+          resources: {}
+      restartPolicy: Always
+      volumes:
+        # - name: cli-claim0
+        #   hostPath:
+        #     path: /var/run/
+        #     type: Directory
+        - name: cli-data
+          hostPath:
+            path: /home/fabric
